@@ -15,14 +15,11 @@ export default function MainNav() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
-        <Navbar.Brand href="/">Books App</Navbar.Brand>
+        <Navbar.Brand href="/">Byungwook Jeon</Navbar.Brand>
         <Navbar.Toggle aria-controls="nav" />
         <Navbar.Collapse id="nav">
 
           <Nav className="me-auto">
-            <Link href="/" passHref legacyBehavior>
-              <Nav.Link>Home</Nav.Link>
-            </Link>
             <Link href="/about" passHref legacyBehavior>
               <Nav.Link>About</Nav.Link>
             </Link>

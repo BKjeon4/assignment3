@@ -16,24 +16,24 @@ export default function RouteGuard({ children }) {
     setFavouritesList(await getFavourites());
   }
 
-  useEffect(() => {
-    updateAtom();
-    authCheck(router.asPath);
-    router.events.on("routeChangeComplete", authCheck);
-    return () => {
-      router.events.off("routeChangeComplete", authCheck);
-    };
-  }, []);
-
-  function authCheck(url) {
+  async function authCheck(url) {
     const path = url.split("?")[0];
     if (!isAuthenticated() && !PUBLIC_PATHS.includes(path)) {
       setAuthorized(false);
       router.push("/login");
     } else {
+      await updateAtom();
       setAuthorized(true);
     }
   }
+
+  useEffect(() => {
+    authCheck(router.asPath);
+    router.events.on("routeChangeComplete", authCheck);
+    return () => {
+      router.events.off("routeChangeComplete", authCheck);
+    };
+  }, [router.asPath]);
 
   return <>{authorized && children}</>;
 }

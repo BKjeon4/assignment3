@@ -5,6 +5,7 @@ import { authenticateUser } from "@/lib/authenticate";
 import { useAtom } from "jotai";
 import { favouritesAtom } from "@/store";
 import { getFavourites } from "@/lib/userData";
+import PageHeader from "@/components/PageHeader";
 
 export default function Login() {
   const router = useRouter();
@@ -17,32 +18,34 @@ export default function Login() {
     setFavouritesList(await getFavourites());
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    try {
-      await authenticateUser(user, password);
-      await updateAtom();
-      router.push("/");
-    } catch (err) {
-      setWarning(err.message);
-    }
+async function handleSubmit(e) {
+  e.preventDefault();
+  if (!user.trim() || !password.trim()) {
+    setWarning("Please fill user and password.");
+    return;
   }
+  try {
+    await authenticateUser(user, password);
+    await updateAtom();
+    router.push("/");
+  } catch (err) {
+    setWarning(err.message);
+  }
+}
 
   return (
     <Container>
+      <PageHeader text="Login" subtext="Enter your login information below:" />
       <Row className="justify-content-md-center">
         <Col md={6}>
-          <h2>Login</h2>
-          <p>Login to your account:</p>
           {warning && <Alert variant="danger">{warning}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Username:</Form.Label>
+              <Form.Label>User:</Form.Label>
               <Form.Control
                 type="text"
                 value={user}
                 onChange={(e) => setUser(e.target.value)}
-                placeholder="Enter username"
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -51,7 +54,6 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password"
               />
             </Form.Group>
             <Button variant="primary" type="submit">
